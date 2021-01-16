@@ -49,11 +49,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        ButterKnife.bind(this);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getInstance().getReference();
-
-        ButterKnife.bind(this);
 
         mcancel.setOnClickListener(new View.OnClickListener() {
             @Override
