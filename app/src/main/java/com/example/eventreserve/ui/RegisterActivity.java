@@ -27,25 +27,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnFocusChangeListener {
-    @BindView(R.id.editTextUsername)
-    EditText mun;
-    @BindView(R.id.editTextPassword)
-    EditText mpsd;
-    @BindView(R.id.editTextRetypePassword)
-    EditText mretypepsd;
-    @BindView(R.id.editTextFullName)
-    EditText mfn;
-    @BindView(R.id.editTextAddress)
-    EditText madd;
-    @BindView(R.id.editTextPhoneNumber)
-    EditText mphone;
-    @BindView(R.id.editTextDateOfBirth)
-    EditText mdob;
+    @BindView(R.id.editTextUsername) EditText mun;
+    @BindView(R.id.editTextPassword) EditText mpsd;
+    @BindView(R.id.editTextRetypePassword) EditText mretypepsd;
+    @BindView(R.id.editTextFullName) EditText mfn;
+    @BindView(R.id.editTextAddress) EditText madd;
+    @BindView(R.id.editTextPhoneNumber) EditText mphone;
+    @BindView(R.id.editTextDateOfBirth) EditText mdob;
 
-    @BindView(R.id.buttonRegister)
-    Button mregister;
-    @BindView(R.id.buttonCancelRegister)
-    Button mcancel;
+    @BindView(R.id.buttonRegister) Button mregister;
+    @BindView(R.id.buttonCancelRegister) Button mcancel;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
@@ -57,6 +48,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getInstance().getReference();
 
         ButterKnife.bind(this);
 
@@ -110,7 +105,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                     return;
                 }
 
-                //create user
                 firebaseAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -129,32 +123,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                                     databaseReference.child("users").child(uid).setValue(account);
                                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                                     finish();
-                                    /*FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                                    assert firebaseUser != null;
-                                    String userid = firebaseUser.getUid();
-
-                                    databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-
-                                    HashMap<String, String> hashMap = new HashMap<>();
-                                    hashMap.put("id", userid);
-                                    hashMap.put("username", fullname);
-                                    hashMap.put("phonenumber", phonenumber);
-                                    hashMap.put("dateOfBirth", dateOfBirth);
-
-                                    databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){
-                                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                            else {
-                                                Toast.makeText(RegisterActivity.this, "You can't register with this email or password", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });*/
                                 }
                             }
 
