@@ -68,6 +68,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        if(readFile().equals("")) {
+
+        }
+        else
+        {
+            String messageAfterDecrypt="";
+            try {
+                messageAfterDecrypt = AESCrypt.decrypt("123", readFile());
+            }catch (GeneralSecurityException e){
+                //handle error - could be due to incorrect password or tampered encryptedMsg
+            }
+            if(messageAfterDecrypt!="") {
+                String[] fulluser = messageAfterDecrypt.split("[ ]");
+                email = fulluser[0].trim();
+                password = fulluser[1].trim();
+                firebaseAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    // there was an error
+                                    Toast.makeText(LoginActivity.this, "Your account information has been changed! Please check again!!",
+                                            Toast.LENGTH_LONG).show();
+                                } else {
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    String uid = firebaseAuth.getCurrentUser().getUid();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("UID", uid);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+
+                        });
+            }
+
+        }
+
+
         mlogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view)
@@ -154,6 +194,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception e) {
             Toast.makeText(this,"Error:"+ e.getMessage(),Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String readFile() {
+        try {
+            FileInputStream in = this.openFileInput("session.txt");
+            if(in==null)
+                return "";
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+            StringBuilder sb = new StringBuilder();
+            String s = null;
+            while ((s = br.readLine()) != null) {
+                sb.append(s).append("\n");
+            }
+
+            return sb.toString();
+
+        } catch (Exception e) {
+            return "";
+        }
+
     }
 
 }
