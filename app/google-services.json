@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "754864500162",
+    "project_id": "eventreserve-66d23",
+    "storage_bucket": "eventreserve-66d23.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754864500162:android:703bdface5d0cb47d3ba5b",
+        "android_client_info": {
+          "package_name": "com.example.eventreserve"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754864500162-vn9v3m5ok584hdse2i5dhhmrvrplo4sm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAarjk2szRbz_pGVVMjGLJ1yr-A1CwtcQ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754864500162-vn9v3m5ok584hdse2i5dhhmrvrplo4sm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
