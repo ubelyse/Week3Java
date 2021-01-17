@@ -59,6 +59,7 @@ public class EventDetailFragment extends Fragment {
         mNameLabel.setText(mevent.getName());
         mCategoriesLabel.setText(mevent.getCategory());
         mattendinggLabel.setText(mevent.getAttendingCount());
+        mWebsiteLabel.setText(mevent.getEventSiteUrl());
         //mPhoneLabel.setText(mevent.getAttendingCount());
         mAddressLabel.setText(mevent.getLocation().getCity());
         return view;
