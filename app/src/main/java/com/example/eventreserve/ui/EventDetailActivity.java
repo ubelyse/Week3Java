@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.example.eventreserve.R;
 import com.example.eventreserve.adapters.EventPagerAdapter;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.models.Events;
 
 import org.parceler.Parcels;
 
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 public class EventDetailActivity extends AppCompatActivity {
     @BindView(R.id.viewPager) ViewPager mViewPager;
     private EventPagerAdapter adapterViewPager;
-    ArrayList<Event> mEvents=new ArrayList<>();
+    ArrayList<Events> mEvents=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

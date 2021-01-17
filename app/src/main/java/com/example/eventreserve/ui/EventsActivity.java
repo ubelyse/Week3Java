@@ -22,6 +22,7 @@ import com.example.eventreserve.R;
 import com.example.eventreserve.adapters.EventListAdapter;
 import com.example.eventreserve.models.Event;
 import com.example.eventreserve.models.EventSearch;
+import com.example.eventreserve.models.Events;
 import com.example.eventreserve.network.YelpApi;
 import com.example.eventreserve.network.YelpService;
 
@@ -31,21 +32,21 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class EventsActivity extends AppCompatActivity {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private String mRecentAddress;
     @BindView(R.id.errorTextView) TextView mErrorTextView;
-    @BindView(R.id.progressBar) ProgressBar mProgressBar;
+    //@BindView(R.id.progressBar) ProgressBar mProgressBar;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
 
     private EventListAdapter mAdapter;
-    public List<Event> events = new ArrayList<>();
+    public ArrayList<Events> events = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +103,31 @@ public class EventsActivity extends AppCompatActivity {
         }
 
         private void getEvents(String location) {
-            YelpApi client = YelpService.getClient();
+
+            final YelpService yelpService = new YelpService();
+            yelpService.findEvents(location, new Callback(){
+
+                @Override
+                public void onFailure(okhttp3.Call call, IOException e){
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    events = yelpService.processResults(response);
+                    EventsActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter = new EventListAdapter(getApplicationContext(), events);
+                            mRecyclerView.setAdapter(mAdapter);
+                            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(EventsActivity.this);
+                            mRecyclerView.setLayoutManager(layoutManager);
+                            mRecyclerView.setHasFixedSize(true);
+                        }
+                    });
+                }
+            });
+            /*YelpApi client = YelpService.getClient();
 
             retrofit2.Call<EventSearch> call = client.getEvents(location, "events");
 
@@ -132,7 +157,7 @@ public class EventsActivity extends AppCompatActivity {
                     showFailureMessage();
                 }
 
-            });
+            });*/
         }
 
         private void addToSharedPreferences(String location) {
@@ -153,7 +178,7 @@ public class EventsActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgressBar() {
-        mProgressBar.setVisibility(View.GONE);
-    }
+   // private void hideProgressBar() {
+       // mProgressBar.setVisibility(View.GONE);
+   // }
 }

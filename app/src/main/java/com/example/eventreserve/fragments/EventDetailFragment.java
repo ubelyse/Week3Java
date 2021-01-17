@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.eventreserve.Constants;
 import com.example.eventreserve.R;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.models.Events;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -37,13 +38,13 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
     @BindView(R.id.addressTextView) TextView mAddressLabel;
     @BindView(R.id.saveEventButton) TextView mSaveEventButton;
 
-    private Event mevent;
+    private Events mevent;
 
     public EventDetailFragment() {
         // Required empty public constructor
     }
 
-    public static EventDetailFragment newInstance(Event event){
+    public static EventDetailFragment newInstance(Events event){
         EventDetailFragment eventDetailFragment = new EventDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable("event", Parcels.wrap(event));
@@ -69,7 +70,7 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
         mattendinggLabel.setText(mevent.getInterestedCount());
         mWebsiteLabel.setText(mevent.getEventSiteUrl());
         //mPhoneLabel.setText(mevent.getAttendingCount());
-        mAddressLabel.setText(mevent.getLocation().getCity());
+        mAddressLabel.setText(mevent.getLocation().get(0));
 
         mWebsiteLabel.setOnClickListener(this);
         mPhoneLabel.setOnClickListener(this);
