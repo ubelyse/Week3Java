@@ -5,15 +5,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.eventreserve.fragments.EventDetailFragment;
-import com.example.eventreserve.models.Event;
-import com.example.eventreserve.models.Events;
 
 import java.util.List;
 
 public class EventPagerAdapter extends FragmentPagerAdapter {
-    private List<Events> mEvents;
+    private List<com.example.hotelreserve.Event> mEvents;
 
-    public EventPagerAdapter(FragmentManager fm, int behavior, List<Events> events) {
+    public EventPagerAdapter(FragmentManager fm, int behavior, List<com.example.hotelreserve.Event> events) {
         super(fm, behavior);
         mEvents = events;
     }

@@ -5,8 +5,8 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
-@Parcel
-public class Events {
+// @Parcel
+/*public class Events {
     Integer attendingCount;
     String category;
     String description;
@@ -164,4 +164,4 @@ public class Events {
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
     }
-}
+}*/

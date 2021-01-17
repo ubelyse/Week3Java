@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventreserve.R;
 import com.example.eventreserve.models.Event;
-import com.example.eventreserve.models.Events;
 import com.example.eventreserve.ui.EventDetailActivity;
 import com.squareup.picasso.Picasso;
 
@@ -24,10 +23,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
-    private List<Events> mevents;
+    private List<Event> mevents;
     private Context mContext;
 
-    public EventListAdapter(Context context, List<Events> events){
+    public EventListAdapter(Context context, List<Event> events){
         mContext = context;
         mevents = events;
     }
@@ -65,7 +64,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             itemView.setOnClickListener(this);
         }
 
-        public void bindEvent(Events event) {
+        public void bindEvent(Event event) {
             mNameTextView.setText(event.getName());
             mCategoryTextView.setText(event.getCategory());
             //mattendingTextView.setText(event.getInterestedCount());

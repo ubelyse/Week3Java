@@ -22,7 +22,6 @@ import com.example.eventreserve.R;
 import com.example.eventreserve.adapters.EventListAdapter;
 import com.example.eventreserve.models.Event;
 import com.example.eventreserve.models.EventSearch;
-import com.example.eventreserve.models.Events;
 import com.example.eventreserve.network.YelpApi;
 import com.example.eventreserve.network.YelpService;
 
@@ -46,7 +45,7 @@ public class EventsActivity extends AppCompatActivity {
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
 
     private EventListAdapter mAdapter;
-    public ArrayList<Events> events = new ArrayList<>();
+    public ArrayList<Event> events = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

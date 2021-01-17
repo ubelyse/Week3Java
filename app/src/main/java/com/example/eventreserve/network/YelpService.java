@@ -1,9 +1,9 @@
 package com.example.eventreserve.network;
 
+import android.location.Location;
+
 import com.example.eventreserve.Constants;
 import com.example.eventreserve.models.Event;
-import com.example.eventreserve.models.Events;
-import com.example.eventreserve.models.Location;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,8 +44,8 @@ public class YelpService {
         call.enqueue(callback);
     }
 
-    public ArrayList<Events> processResults(Response response){
-        ArrayList<Events> events = new ArrayList<>();
+    public ArrayList<Event> processResults(Response response){
+        ArrayList<Event> events = new ArrayList<>();
         try{
             String jsonData = response.body().string();
             JSONObject yelpJSON = new JSONObject(jsonData);
@@ -56,25 +56,25 @@ public class YelpService {
                     String name = restaurantJSON.getString("name");
                     int attendingCount=restaurantJSON.getInt("attendingCount");
                     String category=restaurantJSON.getString("category");
+                    int cost=restaurantJSON.getInt("cost");
+                    int costMax=restaurantJSON.getInt("costMax");
                     String description=restaurantJSON.getString("description");
                     String eventSiteUrl=restaurantJSON.getString("eventSiteUrl");
                     String id=restaurantJSON.getString("id");
                     int interestedCount=restaurantJSON.getInt("interestedCount");
+                    Boolean isCanceled=restaurantJSON.getBoolean("isCanceled");
+                    Boolean isFree=restaurantJSON.getBoolean("isFree");
+                    Boolean isOfficial=restaurantJSON.getBoolean("isOfficial");
                     String ticketsUrl=restaurantJSON.getString("ticketsUrl");
                     String timeEnd=restaurantJSON.getString("timeEnd");
                     String timeStart=restaurantJSON.getString("timeStart");
-                    ArrayList<String> location = new ArrayList<>();
-                    JSONArray addressJSON = restaurantJSON.getJSONObject("location").getJSONArray("display_address");
-                    for (int y = 0; y < addressJSON.length(); y++){
-                        location.add(addressJSON.get(y).toString());
-                    }
-
+                    Location location = new Location(restaurantJSON.getString("location"));
                     String businessId=restaurantJSON.getString("businessId");
 
                     String imageUrl = restaurantJSON.getString("image_url");
                     double latitude = restaurantJSON.getJSONObject("coordinates").getDouble("latitude");
                     double longitude = restaurantJSON.getJSONObject("coordinates").getDouble("longitude");
-                    Events event = new Events(attendingCount,category,description,eventSiteUrl,id,imageUrl,interestedCount,latitude,longitude,name, ticketsUrl,timeEnd,timeStart,location,businessId);
+                   Event event = new Event(attendingCount,category,cost,costMax,description,eventSiteUrl,id,imageUrl,interestedCount,isCanceled,isFree,isOfficial,latitude,longitude,name, ticketsUrl,timeEnd,timeStart,location,businessId);
                     events.add(event);
                 }
             }

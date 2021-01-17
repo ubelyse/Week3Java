@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventreserve.Constants;
 import com.example.eventreserve.R;
-import com.example.eventreserve.models.Event;
 import com.example.eventreserve.ui.EventDetailActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +36,7 @@ public class FirebaseEventViewHolder extends RecyclerView.ViewHolder implements 
         itemView.setOnClickListener(this);
     }
 
-    public void bindEvents(Event event){
+    public void bindEvents(com.example.hotelreserve.Event event){
         ImageView eventImageView = mView.findViewById(R.id.eventImageView);
         TextView nameTextView = mView.findViewById(R.id.eventNameTextView);
         TextView categoryTextView = mView.findViewById(R.id.categoryTextView);
@@ -51,7 +50,7 @@ public class FirebaseEventViewHolder extends RecyclerView.ViewHolder implements 
 
     @Override
     public void onClick(View view){
-        final ArrayList<Event> events = new ArrayList<>();
+        final ArrayList<com.example.hotelreserve.Event> events = new ArrayList<>();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_EVENTS).child(uid);
@@ -59,7 +58,7 @@ public class FirebaseEventViewHolder extends RecyclerView.ViewHolder implements 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
-                    events.add(snapshot.getValue(Event.class));
+                    events.add(snapshot.getValue(com.example.hotelreserve.Event.class));
                 }
 
                 int itemPosition = getLayoutPosition();

@@ -1,14 +1,15 @@
 
 package com.example.eventreserve.models;
 
+import java.util.List;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.parceler.Parcel;
-
-import java.util.List;
-
-public class Location {
+public class Location implements Parcelable
+{
 
     @SerializedName("address1")
     @Expose
@@ -37,6 +38,34 @@ public class Location {
     @SerializedName("cross_streets")
     @Expose
     private String crossStreets;
+    public final static Parcelable.Creator<Location> CREATOR = new Creator<Location>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public Location createFromParcel(Parcel in) {
+            return new Location(in);
+        }
+
+        public Location[] newArray(int size) {
+            return (new Location[size]);
+        }
+
+    }
+    ;
+
+    protected Location(Parcel in) {
+        this.address1 = ((String) in.readValue((String.class.getClassLoader())));
+        this.address2 = ((String) in.readValue((String.class.getClassLoader())));
+        this.address3 = ((String) in.readValue((String.class.getClassLoader())));
+        this.city = ((String) in.readValue((String.class.getClassLoader())));
+        this.zipCode = ((String) in.readValue((String.class.getClassLoader())));
+        this.country = ((String) in.readValue((String.class.getClassLoader())));
+        this.state = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.displayAddress, (java.lang.String.class.getClassLoader()));
+        this.crossStreets = ((String) in.readValue((String.class.getClassLoader())));
+    }
 
     /**
      * No args constructor for use in serialization
@@ -140,6 +169,22 @@ public class Location {
 
     public void setCrossStreets(String crossStreets) {
         this.crossStreets = crossStreets;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(address1);
+        dest.writeValue(address2);
+        dest.writeValue(address3);
+        dest.writeValue(city);
+        dest.writeValue(zipCode);
+        dest.writeValue(country);
+        dest.writeValue(state);
+        dest.writeList(displayAddress);
+        dest.writeValue(crossStreets);
+    }
+
+    public int describeContents() {
+        return  0;
     }
 
 }
