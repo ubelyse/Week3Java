@@ -9,6 +9,9 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.eventreserve.Constants.YELP_BASE_URL;
+import static com.example.eventreserve.Constants.YELP_TOKEN;
+
 public class YelpService {
     private static Retrofit retrofit = null;
 

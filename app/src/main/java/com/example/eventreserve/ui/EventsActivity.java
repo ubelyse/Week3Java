@@ -14,6 +14,8 @@ import com.example.eventreserve.R;
 import com.example.eventreserve.adapters.EventListAdapter;
 import com.example.eventreserve.models.Event;
 import com.example.eventreserve.models.EventSearch;
+import com.example.eventreserve.network.YelpApi;
+import com.example.eventreserve.network.YelpService;
 
 import java.util.List;
 
