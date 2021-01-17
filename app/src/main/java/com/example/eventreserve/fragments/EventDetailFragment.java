@@ -58,7 +58,7 @@ public class EventDetailFragment extends Fragment {
         Picasso.get().load(mevent.getImageUrl()).into(mImageLabel);
         mNameLabel.setText(mevent.getName());
         mCategoriesLabel.setText(mevent.getCategory());
-        mattendinggLabel.setText(mevent.getAttendingCount());
+        mattendinggLabel.setText(mevent.getInterestedCount());
         mWebsiteLabel.setText(mevent.getEventSiteUrl());
         //mPhoneLabel.setText(mevent.getAttendingCount());
         mAddressLabel.setText(mevent.getLocation().getCity());

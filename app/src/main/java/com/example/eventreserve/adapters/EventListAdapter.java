@@ -67,7 +67,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         public void bindEvent(Event event) {
             mNameTextView.setText(event.getName());
             mCategoryTextView.setText(event.getCategory());
-            mattendingTextView.setText(event.getAttendingCount());
+            mattendingTextView.setText(event.getInterestedCount());
             Picasso.get().load(event.getImageUrl()).into(mEventImageView);
         }
 
