@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventreserve.R;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.ui.EventDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
