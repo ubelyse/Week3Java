@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.eventreserve.R;
+import com.example.eventreserve.adapters.EventListAdapter;
 import com.example.eventreserve.models.Event;
 import com.example.eventreserve.models.EventSearch;
 
