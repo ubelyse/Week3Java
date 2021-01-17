@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 
 import com.example.eventreserve.R;
+import com.example.eventreserve.adapters.EventPagerAdapter;
 import com.example.eventreserve.models.Event;
 
 import org.parceler.Parcels;

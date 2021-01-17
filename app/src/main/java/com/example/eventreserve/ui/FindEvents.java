@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FindEvents extends AppCompatActivity {
-    @BindView(R.id.findeventsbtn) Button mFindRestaurantsButton;
+    @BindView(R.id.findeventsbtn) Button mfindeventsbtn;
     @BindView(R.id.locationEditText) EditText mLocationEditText;
 
     @Override
@@ -23,7 +23,7 @@ public class FindEvents extends AppCompatActivity {
         setContentView(R.layout.activity_find_events);
 
         ButterKnife.bind(this);
-        mFindRestaurantsButton.setOnClickListener(new View.OnClickListener() {
+        mfindeventsbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String location = mLocationEditText.getText().toString();
