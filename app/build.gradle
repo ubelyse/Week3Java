@@ -60,4 +60,10 @@ dependencies {
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
     implementation 'com.scottyab:aescrypt:0.0.1'
+
+    // The latest version of firebase-ui causes compile errors
+    implementation 'com.firebaseui:firebase-ui-database:3.3.1'
+    //Add firebase SDK
+    implementation 'com.google.firebase:firebase-core:18.0.0'
 }
+apply plugin: 'com.google.gms.google-services'

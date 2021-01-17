@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventreserve.Constants;
 import com.example.eventreserve.R;
+import com.example.eventreserve.adapters.FirebaseEventViewHolder;
 import com.example.eventreserve.models.Event;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +39,7 @@ public class SavedEventstListActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
 
-        mEventReference = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_RESTAURANTS).child(uid);
+        mEventReference = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_EVENTS).child(uid);
         setUpFirebaseAdapter();
     }
 
@@ -48,8 +51,8 @@ public class SavedEventstListActivity extends AppCompatActivity {
 
         mFirebaseAdapter = new FirebaseRecyclerAdapter<Event, FirebaseEventViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull FirebaseEventViewHolder firebaseRestaurantViewHolder, int position, @NonNull Restaurant restaurant) {
-                firebaseRestaurantViewHolder.bindRestaurant(restaurant);
+            protected void onBindViewHolder(@NonNull FirebaseEventViewHolder firebaseEventViewHolder, int position, @NonNull Event event) {
+                firebaseEventViewHolder.bindEvents(event);
             }
 
             @NonNull
