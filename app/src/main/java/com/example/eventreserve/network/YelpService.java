@@ -18,10 +18,15 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.eventreserve.Constants.YELP_BASE_URL;
+import static com.example.eventreserve.Constants.YELP_TOKEN;
 
 
 public class YelpService {
-    public static void findEvents(String location, Callback callback){
+   /* public static void findEvents(String location, Callback callback){
         OkHttpClient client = new OkHttpClient.Builder()
                 .build();
 
@@ -50,8 +55,8 @@ public class YelpService {
                     String name = restaurantJSON.getString("name");
                     int attendingCount=restaurantJSON.getInt("attendingCount");
                     String category=restaurantJSON.getString("category");
-                    Object cost=restaurantJSON.getJSONObject("cost");
-                    Object costMax=restaurantJSON.getJSONObject("costMax");
+                    int cost=restaurantJSON.getInt("cost");
+                    int costMax=restaurantJSON.getInt("costMax");
                     String description=restaurantJSON.getString("description");
                     String eventSiteUrl=restaurantJSON.getString("eventSiteUrl");
                     String id=restaurantJSON.getString("id");
@@ -62,7 +67,12 @@ public class YelpService {
                     String ticketsUrl=restaurantJSON.getString("ticketsUrl");
                     String timeEnd=restaurantJSON.getString("timeEnd");
                     String timeStart=restaurantJSON.getString("timeStart");
-                    Location location = new Location();
+                    ArrayList<String> location = new ArrayList<>();
+                    JSONArray addressJSON = restaurantJSON.getJSONObject("location").getJSONArray("display_address");
+                    for (int y = 0; y < addressJSON.length(); y++){
+                        location.add(addressJSON.get(y).toString());
+                    }
+
                     String businessId=restaurantJSON.getString("businessId");
 
                     String imageUrl = restaurantJSON.getString("image_url");
@@ -78,8 +88,8 @@ public class YelpService {
             e.printStackTrace();
         }
         return events;
-    }
-   /* private static Retrofit retrofit = null;
+    }*/
+    private static Retrofit retrofit = null;
 
     public static YelpApi getClient() {
 
@@ -104,5 +114,5 @@ public class YelpService {
         }
 
         return retrofit.create(YelpApi.class);
-    }*/
+    }
 }

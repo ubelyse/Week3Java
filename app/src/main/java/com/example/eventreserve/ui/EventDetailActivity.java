@@ -12,6 +12,7 @@ import com.example.eventreserve.models.Event;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -20,7 +21,7 @@ import butterknife.ButterKnife;
 public class EventDetailActivity extends AppCompatActivity {
     @BindView(R.id.viewPager) ViewPager mViewPager;
     private EventPagerAdapter adapterViewPager;
-    List<Event> mEvents;
+    ArrayList<Event> mEvents=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

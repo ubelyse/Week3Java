@@ -69,34 +69,12 @@ public class Event {
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public Event() {
     }
 
-    /**
-     * 
-     * @param eventSiteUrl
-     * @param timeEnd
-     * @param cost
-     * @param isCanceled
-     * @param latitude
-     * @param businessId
-     * @param description
-     * @param costMax
-     * @param isOfficial
-     * @param interestedCount
-     * @param ticketsUrl
-     * @param timeStart
-     * @param isFree
-     * @param imageUrl
-     * @param name
-     * @param location
-     * @param attendingCount
-     * @param id
-     * @param category
-     * @param longitude
-     */
+
     public Event(Integer attendingCount, String category, Object cost, Object costMax, String description, String eventSiteUrl, String id, String imageUrl, Integer interestedCount, Boolean isCanceled, Boolean isFree, Boolean isOfficial, Double latitude, Double longitude, String name, String ticketsUrl, String timeEnd, String timeStart, Location location, String businessId) {
         super();
         this.attendingCount = attendingCount;

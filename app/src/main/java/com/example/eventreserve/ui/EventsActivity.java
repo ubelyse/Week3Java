@@ -12,12 +12,17 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.eventreserve.Constants;
 import com.example.eventreserve.R;
 import com.example.eventreserve.adapters.EventListAdapter;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.models.EventSearch;
+import com.example.eventreserve.network.YelpApi;
 import com.example.eventreserve.network.YelpService;
 
 import java.io.IOException;
@@ -26,19 +31,22 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventsActivity extends AppCompatActivity {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private String mRecentAddress;
+    @BindView(R.id.errorTextView) TextView mErrorTextView;
+    @BindView(R.id.progressBar) ProgressBar mProgressBar;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
 
     private EventListAdapter mAdapter;
-    public ArrayList<Event> events = new ArrayList<>();
+    public List<Event> events = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,35 +102,58 @@ public class EventsActivity extends AppCompatActivity {
         }
 
         private void getEvents(String location) {
-            final YelpService yelpService = new YelpService();
+            YelpApi client = YelpService.getClient();
 
-            yelpService.findEvents(location, new Callback() {
+            retrofit2.Call<EventSearch> call = client.getEvents(location, "events");
 
+            call.enqueue(new Callback<EventSearch>() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
+                public void onResponse(retrofit2.Call<EventSearch> call, Response<EventSearch> response) {
+                    hideProgressBar();
+
+                    if (response.isSuccessful()) {
+                        events = response.body().getEvents();
+                        mAdapter = new EventListAdapter(EventsActivity.this, events);
+                        mRecyclerView.setAdapter(mAdapter);
+                        RecyclerView.LayoutManager layoutManager =
+                                new LinearLayoutManager(EventsActivity.this);
+                        mRecyclerView.setLayoutManager(layoutManager);
+                        mRecyclerView.setHasFixedSize(true);
+
+                        showRestaurants();
+                    } else {
+                        showUnsuccessfulMessage();
+                    }
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) {
-                    events = yelpService.processResults(response);
-
-                    EventsActivity.this.runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            mAdapter = new EventListAdapter(getApplicationContext(), events);
-                            mRecyclerView.setAdapter(mAdapter);
-                            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(EventsActivity.this);
-                            mRecyclerView.setLayoutManager(layoutManager);
-                            mRecyclerView.setHasFixedSize(true);
-                        }
-                    });
+                public void onFailure(Call<EventSearch> call, Throwable t) {
+                    hideProgressBar();
+                    showFailureMessage();
                 }
+
             });
         }
 
         private void addToSharedPreferences(String location) {
             mEditor.putString(Constants.PREFERENCES_LOCATION_KEY, location).apply();
         }
+
+    private void showFailureMessage() {
+        mErrorTextView.setText("Something went wrong. Please check your Internet connection and try again later");
+        mErrorTextView.setVisibility(View.VISIBLE);
     }
+
+    private void showUnsuccessfulMessage() {
+        mErrorTextView.setText("Something went wrong. Please try again later");
+        mErrorTextView.setVisibility(View.VISIBLE);
+    }
+
+    private void showRestaurants() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+}

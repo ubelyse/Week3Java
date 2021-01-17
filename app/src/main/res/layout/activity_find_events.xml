@@ -15,6 +15,16 @@
         android:textSize="60sp"
         android:textStyle="bold"
         android:id="@+id/appNameTextView"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationEditText"
+        android:background="@color/colorTextIcons"
+        android:layout_above="@+id/findeventsbtn"
+        android:layout_marginBottom="10dp"
+        android:padding="5dp"
+        android:hint="Enter Zip Code"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/findeventsbtn"
@@ -33,9 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/findeventsbtn"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="-7dp"
         android:layout_marginTop="92dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="-126dp"
         android:backgroundTint="@color/main_green"
         android:text="Saved Events"
         android:textColor="@color/white" />
