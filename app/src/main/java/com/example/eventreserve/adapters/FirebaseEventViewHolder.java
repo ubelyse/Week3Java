@@ -54,7 +54,7 @@ public class FirebaseEventViewHolder extends RecyclerView.ViewHolder implements 
         final ArrayList<Event> events = new ArrayList<>();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_RESTAURANTS).child(uid);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_EVENTS).child(uid);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
