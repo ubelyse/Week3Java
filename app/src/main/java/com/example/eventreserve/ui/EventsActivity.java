@@ -27,8 +27,7 @@ public class EventsActivity extends AppCompatActivity {
     private static final String TAG = EventsActivity.class.getSimpleName();
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
-    @BindView(R.id.errorTextView)
-    TextView mErrorTextView;
+    @BindView(R.id.errorTextView) TextView mErrorTextView;
     @BindView(R.id.progressBar) ProgressBar mProgressBar;
 
     private EventListAdapter mAdapter;
