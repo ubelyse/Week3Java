@@ -13,8 +13,9 @@ import com.example.eventreserve.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FindEvents extends AppCompatActivity {
+public class FindEvents extends AppCompatActivity implements View.OnClickListener{
     @BindView(R.id.findeventsbtn) Button mfindeventsbtn;
+    @BindView(R.id.savedEvents) Button msavedEventsbtn;
     @BindView(R.id.locationEditText) EditText mLocationEditText;
 
     @Override
@@ -23,15 +24,18 @@ public class FindEvents extends AppCompatActivity {
         setContentView(R.layout.activity_find_events);
 
         ButterKnife.bind(this);
-        mfindeventsbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String location = mLocationEditText.getText().toString();
-                Intent intent = new Intent(FindEvents.this, EventsActivity.class);
-                intent.putExtra("location", location);
-                startActivity(intent);
-            }
-        });
-
+        mfindeventsbtn.setOnClickListener(this);
+        msavedEventsbtn.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View v){
+        if(v == mfindeventsbtn) {
+            Intent intent = new Intent(FindEvents.this, EventsActivity.class);
+            startActivity(intent);
+        }
+        if (v == msavedEventsbtn) {
+            Intent intent = new Intent(FindEvents.this, SavedEventstListActivity.class);
+            startActivity(intent);
+        }
     }
 }
