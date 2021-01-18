@@ -12,71 +12,72 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventreserve.R;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.models.Events;
 import com.example.eventreserve.ui.EventDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
-    private List<Event> mevents;
+    private List<Event> mEvents;
     private Context mContext;
 
-    public EventListAdapter(Context context, List<Event> events){
+    public EventListAdapter(Context context, List<Event> events) {
         mContext = context;
-        mevents = events;
+        mEvents = events;
     }
 
-
     @Override
-    public EventListAdapter.EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public EventListAdapter.EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_item, parent, false);
         EventViewHolder viewHolder = new EventViewHolder(view);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(EventListAdapter.EventViewHolder holder, int position){
-        holder.bindEvent(mevents.get(position));
+    public void onBindViewHolder(EventListAdapter.EventViewHolder holder, int position) {
+        holder.bindEvents(mEvents.get(position));
     }
 
     @Override
-    public int getItemCount(){
-        return mevents.size();
+    public int getItemCount() {
+        return mEvents.size();
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        @BindView(R.id.eventImageView) ImageView mEventImageView;
+    public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.eventImageView) ImageView mRestaurantImageView;
         @BindView(R.id.eventNameTextView) TextView mNameTextView;
         @BindView(R.id.categoryTextView) TextView mCategoryTextView;
-        @BindView(R.id.attendingTextView) TextView mattendingTextView;
+        //@BindView(R.id.ratingTextView) TextView mRatingTextView;
 
         private Context mContext;
 
-        public EventViewHolder(View itemView){
+        public EventViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
             itemView.setOnClickListener(this);
         }
 
-        public void bindEvent(Event event) {
-            mNameTextView.setText(event.getName());
-            mCategoryTextView.setText(event.getCategory());
-            //mattendingTextView.setText(event.getInterestedCount());
-            Picasso.get().load(event.getImageUrl()).into(mEventImageView);
+        public void bindEvents(Event restaurant) {
+            mNameTextView.setText(restaurant.getName());
+            mCategoryTextView.setText(restaurant.getCategory());
+           // mRatingTextView.setText("Rating: " + restaurant.getRating() + "/5");
+            Picasso.get().load(restaurant.getImageUrl()).into(mRestaurantImageView);
         }
 
         @Override
-        public void onClick(View v){
+        public void onClick(View v) {
             int itemPosition = getLayoutPosition();
             Intent intent = new Intent(mContext, EventDetailActivity.class);
             intent.putExtra("position", itemPosition);
-            intent.putExtra("events", Parcels.wrap(mevents));
+            intent.putExtra("event", Parcels.wrap(mEvents));
             mContext.startActivity(intent);
         }
     }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.eventreserve.Constants;
 import com.example.eventreserve.R;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.models.Events;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -31,30 +32,30 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
     @BindView(R.id.eventImageView) ImageView mImageLabel;
     @BindView(R.id.eventNameTextView) TextView mNameLabel;
     @BindView(R.id.categoryTextView) TextView mCategoriesLabel;
-    @BindView(R.id.attendingTextView) TextView mattendinggLabel;
+    @BindView(R.id.attendingTextView) TextView mRatingLabel;
     @BindView(R.id.websiteTextView) TextView mWebsiteLabel;
     @BindView(R.id.phoneTextView) TextView mPhoneLabel;
     @BindView(R.id.addressTextView) TextView mAddressLabel;
-    @BindView(R.id.saveEventButton) TextView mSaveEventButton;
+    @BindView(R.id.saveEventButton) TextView mSaveRestaurantButton;
 
-    private Event mevent;
+    private Event mEvents;
 
     public EventDetailFragment() {
         // Required empty public constructor
     }
 
     public static EventDetailFragment newInstance(Event event){
-        EventDetailFragment eventDetailFragment = new EventDetailFragment();
+        EventDetailFragment restaurantDetailFragment = new EventDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable("event", Parcels.wrap(event));
-        eventDetailFragment.setArguments(args);
-        return eventDetailFragment;
+        restaurantDetailFragment.setArguments(args);
+        return restaurantDetailFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mevent = Parcels.unwrap(getArguments().getParcelable("event"));
+        mEvents = Parcels.unwrap(getArguments().getParcelable("event"));
     }
 
     @Override
@@ -63,18 +64,18 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_detail, container, false);
         ButterKnife.bind(this, view);
-        Picasso.get().load(mevent.getImageUrl()).into(mImageLabel);
-        mNameLabel.setText(mevent.getName());
-        mCategoriesLabel.setText(mevent.getCategory());
-        mattendinggLabel.setText(mevent.getInterestedCount());
-        mWebsiteLabel.setText(mevent.getEventSiteUrl());
-        //mPhoneLabel.setText(mevent.getAttendingCount());
-        mAddressLabel.setText(""+mevent.getLocation());
-
+        Picasso.get()
+                .load(mEvents.getImageUrl())
+                .into(mImageLabel);
+        mNameLabel.setText(mEvents.getName());
+        mCategoriesLabel.setText(mEvents.getCategory());
+       // mRatingLabel.setText(Double.toString(mRestaurant);
+        //mPhoneLabel.setText(mRestaurant.getPhone());
+       // mAddressLabel.setText(""+mRestaurant.getLocation());
         mWebsiteLabel.setOnClickListener(this);
         mPhoneLabel.setOnClickListener(this);
         mAddressLabel.setOnClickListener(this);
-        mSaveEventButton.setOnClickListener(this);
+        mSaveRestaurantButton.setOnClickListener(this);
         return view;
     }
 
@@ -82,22 +83,21 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
     public void onClick(View v){
         if (v == mWebsiteLabel){
             Intent webIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(mevent.getEventSiteUrl()));
+                    Uri.parse(mEvents.getEventSiteUrl()));
             startActivity(webIntent);
         }
         /*if (v == mPhoneLabel) {
             Intent phoneIntent = new Intent(Intent.ACTION_DIAL,
-                    Uri.parse("tel:" + mevent.getPhone()));
+                    Uri.parse("tel:" + mRestaurant.getPhone()));
             startActivity(phoneIntent);
         }*/
         if (v == mAddressLabel) {
             Intent mapIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("geo:" + mevent.getLatitude()
-                            + "," + mevent.getLongitude()
-                            + "?q=(" + mevent.getName() + ")"));
+                    Uri.parse("geo:" + mEvents.getLatitude()
+                            + "," + mEvents.getLongitude()
+                            + "?q=(" + mEvents.getName() + ")"));
             startActivity(mapIntent);
-        }
-        if (v == mSaveEventButton) {
+        } if (v == mSaveRestaurantButton) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String uid = user.getUid();
             DatabaseReference restaurantRef = FirebaseDatabase
@@ -106,8 +106,8 @@ public class EventDetailFragment extends Fragment implements View.OnClickListene
                     .child(uid);
             DatabaseReference pushRef = restaurantRef.push();
             String pushId = pushRef.getKey();
-            mevent.setId(pushId);
-            pushRef.setValue(mevent);
+            mEvents.setId(pushId);
+            pushRef.setValue(mEvents);
             Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
         }
     }

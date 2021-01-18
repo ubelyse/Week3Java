@@ -1,33 +1,35 @@
 package com.example.eventreserve.adapters;
 
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.eventreserve.fragments.EventDetailFragment;
+import com.example.eventreserve.models.Event;
 
 import java.util.List;
 
 public class EventPagerAdapter extends FragmentPagerAdapter {
-    private List<com.example.hotelreserve.Event> mEvents;
+    private List<Event> mEvents;
 
-    public EventPagerAdapter(FragmentManager fm, int behavior, List<com.example.hotelreserve.Event> events) {
-        super(fm, behavior);
+    public EventPagerAdapter(FragmentManager fm, List<Event> events){
+        super(fm);
         mEvents = events;
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment getItem(int position){
         return EventDetailFragment.newInstance(mEvents.get(position));
     }
 
     @Override
-    public int getCount() {
+    public int getCount(){
         return mEvents.size();
     }
 
     @Override
-    public CharSequence getPageTitle(int position) {
+    public CharSequence getPageTitle(int position){
         return mEvents.get(position).getName();
     }
 }

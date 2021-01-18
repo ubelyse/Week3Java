@@ -2,14 +2,13 @@
 package com.example.eventreserve.models;
 
 import java.util.List;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class EventSearch implements Parcelable
-{
+import org.parceler.Parcel;
+
+@Parcel
+public class EventSearch {
 
     @SerializedName("total")
     @Expose
@@ -17,27 +16,6 @@ public class EventSearch implements Parcelable
     @SerializedName("events")
     @Expose
     private List<Event> events = null;
-    public final static Parcelable.Creator<EventSearch> CREATOR = new Creator<EventSearch>() {
-
-
-        @SuppressWarnings({
-            "unchecked"
-        })
-        public EventSearch createFromParcel(Parcel in) {
-            return new EventSearch(in);
-        }
-
-        public EventSearch[] newArray(int size) {
-            return (new EventSearch[size]);
-        }
-
-    }
-    ;
-
-    protected EventSearch(Parcel in) {
-        this.total = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.events, (Event.class.getClassLoader()));
-    }
 
     /**
      * No args constructor for use in serialization
@@ -71,15 +49,6 @@ public class EventSearch implements Parcelable
 
     public void setEvents(List<Event> events) {
         this.events = events;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(total);
-        dest.writeList(events);
-    }
-
-    public int describeContents() {
-        return  0;
     }
 
 }

@@ -65,5 +65,6 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:3.3.1'
     //Add firebase SDK
     implementation 'com.google.firebase:firebase-core:18.0.0'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }
 apply plugin: 'com.google.gms.google-services'

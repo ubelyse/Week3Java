@@ -1,17 +1,13 @@
 
 package com.example.eventreserve.models;
 
-import android.location.Location;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
+import org.parceler.Parcel;
 
-public class Event implements Parcelable
-{
+@Parcel
+public class Event {
 
     @SerializedName("attending_count")
     @Expose
@@ -21,10 +17,10 @@ public class Event implements Parcelable
     private String category;
     @SerializedName("cost")
     @Expose
-    private Object cost;
+    private Double cost;
     @SerializedName("cost_max")
     @Expose
-    private Object costMax;
+    private Double costMax;
     @SerializedName("description")
     @Expose
     private String description;
@@ -73,45 +69,6 @@ public class Event implements Parcelable
     @SerializedName("business_id")
     @Expose
     private String businessId;
-    public final static Parcelable.Creator<Event> CREATOR = new Creator<Event>() {
-
-
-        @SuppressWarnings({
-            "unchecked"
-        })
-        public Event createFromParcel(Parcel in) {
-            return new Event(in);
-        }
-
-        public Event[] newArray(int size) {
-            return (new Event[size]);
-        }
-
-    }
-    ;
-
-    protected Event(Parcel in) {
-        this.attendingCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.category = ((String) in.readValue((String.class.getClassLoader())));
-        this.cost = ((Object) in.readValue((Object.class.getClassLoader())));
-        this.costMax = ((Object) in.readValue((Object.class.getClassLoader())));
-        this.description = ((String) in.readValue((String.class.getClassLoader())));
-        this.eventSiteUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.id = ((String) in.readValue((String.class.getClassLoader())));
-        this.imageUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.interestedCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.isCanceled = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.isFree = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.isOfficial = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.latitude = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.longitude = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.ticketsUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.timeEnd = ((String) in.readValue((String.class.getClassLoader())));
-        this.timeStart = ((String) in.readValue((String.class.getClassLoader())));
-        this.location = ((Location) in.readValue((Location.class.getClassLoader())));
-        this.businessId = ((String) in.readValue((String.class.getClassLoader())));
-    }
 
     /**
      * No args constructor for use in serialization
@@ -143,7 +100,7 @@ public class Event implements Parcelable
      * @param category
      * @param longitude
      */
-    public Event(Integer attendingCount, String category, Object cost, Object costMax, String description, String eventSiteUrl, String id, String imageUrl, Integer interestedCount, Boolean isCanceled, Boolean isFree, Boolean isOfficial, Double latitude, Double longitude, String name, String ticketsUrl, String timeEnd, String timeStart, Location location, String businessId) {
+    public Event(Integer attendingCount, String category, Double cost, Double costMax, String description, String eventSiteUrl, String id, String imageUrl, Integer interestedCount, Boolean isCanceled, Boolean isFree, Boolean isOfficial, Double latitude, Double longitude, String name, String ticketsUrl, String timeEnd, String timeStart, Location location, String businessId) {
         super();
         this.attendingCount = attendingCount;
         this.category = category;
@@ -167,7 +124,6 @@ public class Event implements Parcelable
         this.businessId = businessId;
     }
 
-
     public Integer getAttendingCount() {
         return attendingCount;
     }
@@ -188,7 +144,7 @@ public class Event implements Parcelable
         return cost;
     }
 
-    public void setCost(Object cost) {
+    public void setCost(Double cost) {
         this.cost = cost;
     }
 
@@ -196,7 +152,7 @@ public class Event implements Parcelable
         return costMax;
     }
 
-    public void setCostMax(Object costMax) {
+    public void setCostMax(Double costMax) {
         this.costMax = costMax;
     }
 
@@ -326,33 +282,6 @@ public class Event implements Parcelable
 
     public void setBusinessId(String businessId) {
         this.businessId = businessId;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(attendingCount);
-        dest.writeValue(category);
-        dest.writeValue(cost);
-        dest.writeValue(costMax);
-        dest.writeValue(description);
-        dest.writeValue(eventSiteUrl);
-        dest.writeValue(id);
-        dest.writeValue(imageUrl);
-        dest.writeValue(interestedCount);
-        dest.writeValue(isCanceled);
-        dest.writeValue(isFree);
-        dest.writeValue(isOfficial);
-        dest.writeValue(latitude);
-        dest.writeValue(longitude);
-        dest.writeValue(name);
-        dest.writeValue(ticketsUrl);
-        dest.writeValue(timeEnd);
-        dest.writeValue(timeStart);
-        dest.writeValue(location);
-        dest.writeValue(businessId);
-    }
-
-    public int describeContents() {
-        return  0;
     }
 
 }

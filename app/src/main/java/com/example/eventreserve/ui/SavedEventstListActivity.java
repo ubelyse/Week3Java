@@ -14,6 +14,7 @@ import com.example.eventreserve.Constants;
 import com.example.eventreserve.R;
 import com.example.eventreserve.adapters.FirebaseEventViewHolder;
 import com.example.eventreserve.models.Event;
+import com.example.eventreserve.models.Events;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,10 +26,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SavedEventstListActivity extends AppCompatActivity {
-    private DatabaseReference mEventReference;
-    private FirebaseRecyclerAdapter<Event, FirebaseEventViewHolder> mFirebaseAdapter;
+
+    private DatabaseReference mRestaurantReference;
+    private FirebaseRecyclerAdapter<Events, FirebaseEventViewHolder> mFirebaseAdapter;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,20 +42,20 @@ public class SavedEventstListActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
 
-        mEventReference = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_EVENTS).child(uid);
+        mRestaurantReference = FirebaseDatabase.getInstance().getReference(Constants.FIREBASE_CHILD_EVENTS).child(uid);
         setUpFirebaseAdapter();
     }
 
     private void setUpFirebaseAdapter(){
-        FirebaseRecyclerOptions<Event> options =
-                new FirebaseRecyclerOptions.Builder<Event>()
-                        .setQuery(mEventReference, Event.class)
+        FirebaseRecyclerOptions<Events> options =
+                new FirebaseRecyclerOptions.Builder<Events>()
+                        .setQuery(mRestaurantReference, Events.class)
                         .build();
 
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<Event, FirebaseEventViewHolder>(options) {
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<Events, FirebaseEventViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull FirebaseEventViewHolder firebaseEventViewHolder, int position, @NonNull Event event) {
-                firebaseEventViewHolder.bindEvents(event);
+            protected void onBindViewHolder(@NonNull FirebaseEventViewHolder firebaseEventViewHolder, int position, @NonNull Events restaurant) {
+                firebaseEventViewHolder.bindRestaurant(restaurant);
             }
 
             @NonNull
@@ -80,5 +83,4 @@ public class SavedEventstListActivity extends AppCompatActivity {
             mFirebaseAdapter.stopListening();
         }
     }
-
 }

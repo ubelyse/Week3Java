@@ -22,18 +22,19 @@ import butterknife.ButterKnife;
 public class EventDetailActivity extends AppCompatActivity {
     @BindView(R.id.viewPager) ViewPager mViewPager;
     private EventPagerAdapter adapterViewPager;
-    ArrayList<Events> mEvents=new ArrayList<>();
+    ArrayList<Event> mevents = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+
         ButterKnife.bind(this);
 
-        mEvents = Parcels.unwrap(getIntent().getParcelableExtra("event"));
+        mevents = Parcels.unwrap(getIntent().getParcelableExtra("event"));
         int startingPosition = getIntent().getIntExtra("position", 0);
 
-        adapterViewPager = new EventPagerAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, mEvents);
+        adapterViewPager = new EventPagerAdapter(getSupportFragmentManager(), mevents);
         mViewPager.setAdapter(adapterViewPager);
         mViewPager.setCurrentItem(startingPosition);
     }
