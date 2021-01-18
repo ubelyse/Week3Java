@@ -9,7 +9,13 @@
 
     <item
         android:id="@+id/action_event"
-        android:title="Event"
+        android:title="Search Event"
+        android:visible="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_saved_events"
+        android:title="Saved Event"
         android:visible="true"
         app:showAsAction="never" />
 

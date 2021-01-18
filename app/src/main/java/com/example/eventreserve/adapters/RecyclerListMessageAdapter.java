@@ -1,6 +1,11 @@
 package com.example.eventreserve.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventreserve.R;
 import com.example.eventreserve.models.Message;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -28,6 +37,11 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
     private List<Message> listMessages;
     private int rMessageMine, rMessageFriend, rImageMessageMine, rImageMessageFriend, rAudioMessageMine, rAudioMessageFriend;
     Context context;
+    private String mFileName = "";
+    private MediaPlayer mPlayer=null;
+    private String currentAudio = "";
+    public static ImageButton btnCurrentPlay = null;
+    public static MediaPlayer getCurrentMedia = null;
 
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
@@ -39,6 +53,7 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
         this.rMessageFriend = rMessageFriend; // layout your message
         this.context = context;
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMessageMine, textViewMessageTimeMine, textViewMessageFriend, textViewMessageTimeFriend;
@@ -56,6 +71,11 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
             textViewMessageFriend = itemView.findViewById(R.id.textViewMessageFriend);
             textViewMessageTimeFriend = itemView.findViewById(R.id.textViewMessageTimeFriend);
 
+
+//            avatarSeen = itemView.findViewById(R.id.avatarSeen);
+//            avatarSeenImage = itemView.findViewById(R.id.avatarSeenImage);
+//            avatarSeenAudio = itemView.findViewById(R.id.avatarSeenAudio);
+
         }
     }
 
@@ -63,8 +83,26 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
     public int getItemViewType(int position) {
         if (listMessages.isEmpty())
             return 0;
-
-        return position;
+        else if (listMessages.get(position).getUidSender().equals(FirebaseAuth.getInstance().getUid())
+                && !listMessages.get(position).isImage() && !listMessages.get(position).isAudio()) // The message itself is text
+            return 1;
+        else if (!listMessages.get(position).getUidSender().equals(FirebaseAuth.getInstance().getUid())
+                && !listMessages.get(position).isImage() && !listMessages.get(position).isAudio()) // Your message is text
+            return 2;
+        else if (listMessages.get(position).getUidSender().equals(FirebaseAuth.getInstance().getUid())
+                && listMessages.get(position).isImage()) // my message is a picture
+            return 3;
+        else if (!listMessages.get(position).getUidSender().equals(FirebaseAuth.getInstance().getUid())
+                && listMessages.get(position).isImage()) //your message is a photo
+            return 4;
+        else if (listMessages.get(position).getUidSender().equals(FirebaseAuth.getInstance().getUid())
+                && listMessages.get(position).isAudio()) { // my message is an audio message
+            return 5;
+        } else if (!listMessages.get(position).getUidSender().equals(FirebaseAuth.getInstance().getUid())
+                && listMessages.get(position).isAudio()) { // Your message is an audio message
+            return 6;
+        }
+        return 0;
     }
 
     @Override
@@ -74,13 +112,6 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
         // Create views of your text messages
         View viewMessageFriend = LayoutInflater.from(parent.getContext()).inflate(rMessageFriend, parent, false);
         // Create a view of your own picture message
-        View viewImageMessageMine = LayoutInflater.from(parent.getContext()).inflate(rImageMessageMine, parent, false);
-        // Create view of your picture messages
-        View viewImageMessageFriend = LayoutInflater.from(parent.getContext()).inflate(rImageMessageFriend, parent, false);
-
-        View viewAudioMessageMine = LayoutInflater.from(parent.getContext()).inflate(rAudioMessageMine, parent, false);
-
-        View viewAudioMessageFriend = LayoutInflater.from(parent.getContext()).inflate(rAudioMessageFriend, parent, false);
 
         ViewHolder viewHolder = null;
 
@@ -93,18 +124,6 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
                 break;
             case 2:
                 viewHolder = new ViewHolder(viewMessageFriend);
-                break;
-            case 3:
-                viewHolder = new ViewHolder(viewImageMessageMine);
-                break;
-            case 4:
-                viewHolder = new ViewHolder(viewImageMessageFriend);
-                break;
-            case 5:
-                viewHolder = new ViewHolder(viewAudioMessageMine);
-                break;
-            case 6:
-                viewHolder = new ViewHolder(viewAudioMessageFriend);
                 break;
         }
 
@@ -131,6 +150,78 @@ public class RecyclerListMessageAdapter extends RecyclerView.Adapter<RecyclerLis
     @Override
     public int getItemCount() {
         return listMessages.size();
+    }
+
+    public void getAvatarSeen(final CircleImageView avtSeen, String uidFriend) {
+        StorageReference ref = storageReference.child("avatar").child(uidFriend + "avatar.jpg");
+        try {
+            File root = new File(Environment.getExternalStorageDirectory(), "be_images");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+
+            final File gpxfile = new File(root, uidFriend + "avatar.jpg");
+
+            if (gpxfile.exists()) {
+                Bitmap bmp = BitmapFactory.decodeFile(gpxfile.getAbsolutePath());
+                avtSeen.setImageBitmap(bmp);
+            } else {
+                ref.getFile(gpxfile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Bitmap bmp = BitmapFactory.decodeFile(gpxfile.getAbsolutePath());
+                        avtSeen.setImageBitmap(bmp);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        avtSeen.setImageResource(R.drawable.avatar_default);
+                    }
+                }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    }
+                });
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getImageStorage(final ImageView imageView, String senderUid, String receiverUid, String nameImage) {
+        StorageReference ref = storageReference.child(senderUid).child(receiverUid).child(nameImage);
+        try {
+            File root = new File(Environment.getExternalStorageDirectory(), "be_images");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+
+            final File gpxfile = new File(root, nameImage);
+
+            if (gpxfile.exists()) {
+                Bitmap bmp = BitmapFactory.decodeFile(gpxfile.getAbsolutePath());
+                imageView.setImageBitmap(bmp);
+            } else {
+                ref.getFile(gpxfile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Bitmap bmp = BitmapFactory.decodeFile(gpxfile.getAbsolutePath());
+                        imageView.setImageBitmap(bmp);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        imageView.setImageResource(R.drawable.not_found_image);
+                    }
+                }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    }
+                });
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
 }

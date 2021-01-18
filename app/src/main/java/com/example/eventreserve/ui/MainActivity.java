@@ -142,6 +142,11 @@ public class MainActivity extends AppCompatActivity implements TabHost.OnTabChan
             Intent intent=new Intent(MainActivity.this,FindEvents.class);
             startActivity(intent);
         }
+        else if(id==R.id.action_saved_events){
+            Intent intent=new Intent(MainActivity.this,SavedEventstListActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
