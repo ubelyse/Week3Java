@@ -27,8 +27,9 @@ public class FindEvents extends AppCompatActivity implements View.OnClickListene
     private ValueEventListener mSearchedLocationReferenceListener;
 
     @BindView(R.id.findeventsbtn) Button findEventsbtn;
+    @BindView(R.id.savedEvents) Button msavedEvents;
     @BindView(R.id.locationEditText) EditText mLocationEditText;
-    @BindView(R.id.savedEvents) TextView msavedEventsbtn;
+    //@BindView(R.id.savedEvents) TextView msavedEventsbtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class FindEvents extends AppCompatActivity implements View.OnClickListene
         ButterKnife.bind(this);
 
         findEventsbtn.setOnClickListener(this);
-        msavedEventsbtn.setOnClickListener(this);
+        msavedEvents.setOnClickListener(this);
     }
 
     @Override
@@ -72,6 +73,11 @@ public class FindEvents extends AppCompatActivity implements View.OnClickListene
 
             Intent intent = new Intent(FindEvents.this, EventsActivity.class);
             intent.putExtra("location", location);
+            startActivity(intent);
+        }
+
+        if (v == msavedEvents) {
+            Intent intent = new Intent(FindEvents.this, SavedEventstListActivity.class);
             startActivity(intent);
         }
     }

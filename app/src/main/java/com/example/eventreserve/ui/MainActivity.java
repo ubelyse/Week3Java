@@ -77,10 +77,10 @@ public class MainActivity extends AppCompatActivity implements TabHost.OnTabChan
 
         // transfer data from MainActivity via PersonalFragment
         bundle = getIntent().getExtras();
-        String uid = bundle.getString("UID");
+//        String uid = bundle.getString("UID");
 
         Bundle info = new Bundle();
-        info.putString("UID",uid);
+ //      info.putString("UID",uid);
 
         fragments.add(new MessagesFragment());
         fragments.add(new FriendsFragment());
@@ -144,9 +144,15 @@ public class MainActivity extends AppCompatActivity implements TabHost.OnTabChan
         }
         return super.onOptionsItemSelected(item);
     }
+
     private void logout() {
         FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
