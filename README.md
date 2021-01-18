@@ -7,7 +7,7 @@ The following is a messaging appication which allow users of the system to commu
 ## Setup/Installation Requirements
 * Fork this repo
 * Clone this repo
-*Android Studio
+* Android Studio
 * Open terminal
 * Navigate to appropriate directory using the cd command
 * type in the command git clone and paste the url of clone and then press enter
@@ -17,7 +17,7 @@ The following is a messaging appication which allow users of the system to commu
 ## Technologies Used
 * Java
 * Yelp Api
-*Firebase
+* Firebase
 
 ## Screenshot
 ![first Image](/screenshot/ev1.png)
