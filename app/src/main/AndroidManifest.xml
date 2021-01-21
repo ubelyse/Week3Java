@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EventReserve">
-        <activity android:name=".ui.ChatWithFriendActivity" />
+        <activity android:name=".ui.ChatWithFriendActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".ui.SavedEventstListActivity" />
         <activity android:name=".ui.EventDetailActivity" />
         <activity android:name=".ui.EventsActivity" />

@@ -1,127 +1,103 @@
 package com.example.eventreserve.fragments;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-
 import com.example.eventreserve.R;
-import com.example.eventreserve.adapters.ListRecentlyChatAdapter;
-import com.example.eventreserve.models.RecentlyChat;
-import com.example.eventreserve.ui.ChatWithFriendActivity;
+import com.example.eventreserve.adapters.UserAdapter;
+import com.example.eventreserve.models.Chatlist;
+import com.example.eventreserve.models.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class MessagesFragment extends Fragment implements ChildEventListener {
+public class MessagesFragment extends Fragment {
 
-    private DatabaseReference nodeRoot;
+    private RecyclerView recyclerView;
 
-    private List<RecentlyChat> recentlyChatList;
-    private ListView listviewRecentlyChat;
+    private UserAdapter userAdapter;
+    private List<User> mUsers;
 
-    private ListRecentlyChatAdapter adapter;
+    FirebaseUser fuser;
+    DatabaseReference reference;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View v = inflater.inflate(R.layout.fragment_messages, container, false);
-
-        recentlyChatList = new ArrayList<>();
-        listviewRecentlyChat = (ListView)v.findViewById(R.id.listViewRecentlyChat);
-        listviewRecentlyChat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RecentlyChat recentlyChat = (RecentlyChat)parent.getAdapter().getItem(position);
-                Intent iChat = new Intent(getActivity(), ChatWithFriendActivity.class);
-                iChat.putExtra("UID_Friend",recentlyChat.getUidRecentlyChat());
-                iChat.putExtra("Name_Friend",recentlyChat.getNameRecentlychat());
-                iChat.putExtra("From","Message_Fragment");
-                startActivity(iChat);
-                getActivity().finish();
-            }
-        });
-        adapter = new ListRecentlyChatAdapter(getActivity(),R.layout.item_recently_chat_in_list,recentlyChatList);
-        listviewRecentlyChat.setAdapter(adapter);
-
-        nodeRoot = FirebaseDatabase.getInstance().getReference().child("more_info")
-                .child(FirebaseAuth.getInstance().getUid());
-
-        nodeRoot.addChildEventListener(this);
-
-        return v;
-    }
+    private List<Chatlist> usersList;
 
     @Override
-    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-        recentlyChatList.clear();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_messages, container, false);
 
-        for(DataSnapshot data : dataSnapshot.getChildren()){
-            RecentlyChat temp = data.getValue(RecentlyChat.class);
-            recentlyChatList.add(temp);
-        }
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // compare the time of the latest message and put it to the top
-        Collections.sort(recentlyChatList, new Comparator<RecentlyChat>() {
-            DateFormat f = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        usersList = new ArrayList<>();
+
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(fuser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public int compare(RecentlyChat o1, RecentlyChat o2) {
-                try {
-                    if(f.parse(o1.getLastMessageTime()).after(f.parse(o2.getLastMessageTime()))){
-                        return -1;
-                    }
-                    else if(f.parse(o1.getLastMessageTime()).before(f.parse(o2.getLastMessageTime()))){
-                        return 1;
-                    }
-                    return 0;
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chatlist chatlist = snapshot.getValue(Chatlist.class);
+                    usersList.add(chatlist);
                 }
+
+                chatList();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
-        adapter.notifyDataSetChanged();
+        return view;
     }
 
-    @Override
-    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-        recentlyChatList.clear();
-        nodeRoot.removeEventListener(this);
-        nodeRoot.addChildEventListener(this);
+    private void chatList() {
+        mUsers = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference("users");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUsers.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User user = snapshot.getValue(User.class);
+                    for (Chatlist chatlist : usersList){
+                        assert user != null;
+                        if (user.getId().equals(chatlist.getId())){
+                            mUsers.add(user);
+                        }
+                    }
+                }
+                userAdapter = new UserAdapter(getContext(), mUsers, true);
+                recyclerView.setAdapter(userAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    @Override
-    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-    }
-
-    @Override
-    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-    }
-
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-    }
 }

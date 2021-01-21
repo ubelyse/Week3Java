@@ -1,92 +1,140 @@
 package com.example.eventreserve.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toolbar;
+import android.widget.EditText;
 
 import com.example.eventreserve.R;
-import com.example.eventreserve.adapters.ListFriendAdapter;
-import com.example.eventreserve.models.Account;
-import com.example.eventreserve.models.AccountRequest;
-import com.example.eventreserve.ui.ChatWithFriendActivity;
+import com.example.eventreserve.adapters.UserAdapter;
+import com.example.eventreserve.models.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FriendsFragment extends Fragment{
 
-    private Toolbar toolbar;
-    private ListView listViewFriend;
-    private HashMap<String, Account> hashMapFriends;
-    private ListFriendAdapter listFriendAdapter;
-    private DatabaseReference nodeRoot;
 
-    @Nullable
+    private RecyclerView recyclerView;
+
+    private UserAdapter userAdapter;
+    private List<User> mUsers;
+
+    EditText search_users;
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_friends, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        /*toolbar = v.findViewById(R.id.toolBarSearch);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);*/
+        View view = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        listViewFriend = (ListView)v.findViewById(R.id.listViewFriend);
-        hashMapFriends = new HashMap<>();
-        listFriendAdapter = new ListFriendAdapter(getActivity(), R.layout.item_friend_in_list_friend, hashMapFriends);
-        listViewFriend.setAdapter(listFriendAdapter);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        listViewFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mUsers = new ArrayList<>();
+
+        readUsers();
+
+        search_users = view.findViewById(R.id.search_users);
+        search_users.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AccountRequest fr = (AccountRequest)parent.getAdapter().getItem(position);
-                Intent iChat = new Intent(getActivity(), ChatWithFriendActivity.class);
-                iChat.putExtra("UID_Friend",fr.getUid());
-                iChat.putExtra("Name_Friend",fr.getFullName());
-                iChat.putExtra("From","Friend_Fragment");
-                startActivity(iChat);
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchUsers(charSequence.toString().toLowerCase());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
-        nodeRoot = FirebaseDatabase.getInstance().getReference();
-        nodeRoot.addValueEventListener(new ValueEventListener() {
+        return view;
+    }
+
+    private void searchUsers(String s) {
+
+        final FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
+        Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("search")
+                .startAt(s)
+                .endAt(s+"\uf8ff");
+
+        query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> uidFriends = new ArrayList<>();
-                DataSnapshot nodeFriends = snapshot.child("users");
-                for (DataSnapshot dataSnapshot : nodeFriends.getChildren()) {
-                    if (!dataSnapshot.getKey().equals(FirebaseAuth.getInstance().getUid())) {
-                        Account account = dataSnapshot.getValue(Account.class);
-                        if (!hashMapFriends.containsValue(account)) {
-                            hashMapFriends.put(dataSnapshot.getKey(), account);
-                        }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUsers.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    User user = snapshot.getValue(User.class);
+
+                    assert user != null;
+                    assert fuser != null;
+                    if (!user.getId().equals(fuser.getUid())){
+                        mUsers.add(user);
                     }
                 }
-                listFriendAdapter.notifyDataSetChanged();
+
+                userAdapter = new UserAdapter(getContext(), mUsers, false);
+                recyclerView.setAdapter(userAdapter);
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
-        return v;
+    }
+
+    private void readUsers() {
+
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (search_users.getText().toString().equals("")) {
+                    mUsers.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        User user = snapshot.getValue(User.class);
+
+                        if (!user.getId().equals(firebaseUser.getUid())) {
+                            mUsers.add(user);
+                        }
+
+                    }
+
+                    userAdapter = new UserAdapter(getContext(), mUsers, false);
+                    recyclerView.setAdapter(userAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

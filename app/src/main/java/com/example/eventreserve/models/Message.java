@@ -1,82 +1,50 @@
 package com.example.eventreserve.models;
 
 public class Message {
-    private String uidSender;
-    private String uidReceiver;
-    private String content;
-    private boolean image;
-    private boolean audio;
-    private String timeMessage;
-    private boolean lastMessageSeen;
+    private String sender;
+    private String receiver;
+    private String message;
+    private boolean isseen;
 
     public Message(){
-
     }
 
-    public Message(String uidSender, String uidReceiver, String content, boolean image,
-                   boolean audio, String timeMessage, boolean lastMessageSeen) {
-        this.uidSender = uidSender;
-        this.uidReceiver = uidReceiver;
-        this.content = content;
-        this.image = image;
-        this.audio = audio;
-        this.timeMessage = timeMessage;
-        this.lastMessageSeen = lastMessageSeen;
+    public Message(String sender, String receiver, String message, boolean isseen) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.message = message;
+        this.isseen = isseen;
     }
 
-    public String getUidSender() {
-        return uidSender;
+    public String getSender() {
+        return sender;
     }
 
-    public void setUidSender(String uidSender) {
-        this.uidSender = uidSender;
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
-    public String getUidReceiver() {
-        return uidReceiver;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setUidReceiver(String uidReceiver) {
-        this.uidReceiver = uidReceiver;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    public String getContent() {
-        return content;
+    public String getMessage() {
+        return message;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public boolean isImage() {
-        return image;
+    public boolean isIsseen() {
+        return isseen;
     }
 
-    public void setImage(boolean image) {
-        this.image = image;
-    }
-
-    public boolean isAudio() {
-        return audio;
-    }
-
-    public void setAudio(boolean audio) {
-        this.audio = audio;
-    }
-
-    public String getTimeMessage() {
-        return timeMessage;
-    }
-
-    public void setTimeMessage(String timeMessage) {
-        this.timeMessage = timeMessage;
-    }
-
-    public boolean isLastMessageSeen() {
-        return lastMessageSeen;
-    }
-
-    public void setLastMessageSeen(boolean lastMessageSeen) {
-        this.lastMessageSeen = lastMessageSeen;
+    public void setIsseen(boolean isseen) {
+        this.isseen = isseen;
     }
 }

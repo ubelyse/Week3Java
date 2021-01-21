@@ -12,11 +12,12 @@ import android.widget.Toast;
 
 import com.example.eventreserve.R;
 import com.example.eventreserve.fragments.DatePickerFragment;
-import com.example.eventreserve.models.Account;
+import com.example.eventreserve.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -114,10 +115,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnFocusC
                                     Toast.makeText(RegisterActivity.this, "Registration error, please check again. Each email only registered 1 time only!",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+                                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                                   String userid=firebaseUser.getUid();
                                     Toast.makeText(RegisterActivity.this, "Registration is complete!",
                                             Toast.LENGTH_SHORT).show();
 
-                                    Account account = new Account(email, "", fullname, address, phonenumber, dateOfBirth);
+                                    User account = new User(userid,email, fullname,address,"","", phonenumber, dateOfBirth,"offline",fullname.toLowerCase());
                                     String uid = firebaseAuth.getCurrentUser().getUid();
                                     databaseReference.child("users").child(uid).setValue(account);
                                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
